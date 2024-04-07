@@ -88,7 +88,7 @@ Analysis:
   - a description of the query
   - the code used to perform it
   - up to the first three results in a preformatted text block (feel free to clip the text in fields to prevent line-wrapping)
-  - describe any insights the analysis shows that may not be obvious to someone just viewing the raw data.
+  - describe any insights the analysis shows t hat may not be obvious to someone just viewing the raw data.
 
 ## Part 3: Extra credit
 

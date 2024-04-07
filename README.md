@@ -141,7 +141,8 @@ db.listings.distinct('host_name')
 ```
 
 Output (First 3):
-```'A-Team',         'Aaron',            'Abe',
+```
+'A-Team',         'Aaron',            'Abe',
 ```
 
 This query found all unique host names. 
