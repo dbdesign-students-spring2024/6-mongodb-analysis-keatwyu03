@@ -5,12 +5,12 @@
 
 MongoDB Command 1:
 
-`mongo
+```mongo
 db.listings.find({}).limit(2)
-`
+```
 
 Output: 
-`
+```
 [
   {
     _id: ObjectId('6611a42bc34b7fbd6a5a648b'),
@@ -39,7 +39,7 @@ Output:
     review_scores_rating: 4.97
   }
 ]
-`
+```
 
 This query found the first 2 entries of the collection in any other. Both airbnb listings have relatively high review scores, but it does seem like (with only one sample from each section) there may be an interesting relationship between the number of beds and the review score.
 
@@ -47,12 +47,12 @@ This query found the first 2 entries of the collection in any other. Both airbnb
 
 MongoDB Command 2:
 
-`mongo
+```mongo
 db.listings.find().pretty().limit(10)
-`
+```
 
 Output:
-`
+```
 [
   {
     _id: ObjectId('6611a42bc34b7fbd6a5a648b'),
@@ -94,19 +94,19 @@ Output:
     review_scores_rating: 4.99
   }
 ]
-`
+```
 
 This query found the 10 documents that organizes it in a good looking way using the pretty function. Something interesting to note is that super hosts have very high ratings. If I were booking an airbnb, having a rating of 4.5 or above is good enough, hence these superhosts status might play a role in the quality of the housing and hence the rating. 
 
 
  MongoDB Command 3:
 
-`mongo
+```mongo
  db.listings.find({host_is_superhost: 't', $or:[{host_id: 30559}, {host_id : 31481}]}, {name: 1, price: 1, neighbourhood: 1, host_name: 1, host_is_superhost: 1, _id : 0})
- `
+ ```
 
 Output:
-`
+```
 [
   {
     name: 'Rental unit in Seattle · ★4.72 · 1 bedroom · 1 bed · 3 shared baths',
@@ -130,30 +130,30 @@ Output:
     price: '$155.00'
   }
 ]
-`
+```
 
 This query found 2 hosts that are super hosts and shows the name, price, neighbourhood, and superhost status. Something interesting is that Cassie (perhaps not the same one, but for simplicity of this analysis I will assume that these two Cassies are the same one) is a very expensive host, serving houses above $150 per night.
 
 MongoDB Command 4:
 
-`mongo
+```mongo
 db.listings.distinct('host_name')
-`
+```
 
 Output (First 3):
-`'A-Team',         'Aaron',            'Abe',
-`
+```'A-Team',         'Aaron',            'Abe',
+```
 
 This query found all unique host names. 
 
 MongoDB Command 5: 
 
-`mongo
+```mongo
 db.listings.find({neighbourhood_group_cleansed: 'Cascade', beds: {$gt: 2}}, {name: 1, beds: 1, review_scores_rating : 1, price: 1, _id : 0}).sort({review_scores_rating: -1})
-`
+```
 
 Output:
-`
+```
 {
     name: 'Townhouse in Seattle · ★5.0 · 3 bedrooms · 3 beds · 2.5 baths',
     price: '$317.00',
@@ -172,7 +172,7 @@ Output:
     beds: 3,
     review_scores_rating: 5
   }
-`
+```
 
 This query finds all places that have more than 2 beds in the Cascade neighbourhood and orders by the review score rating in descending order. The output will include the name, beds, review scores rating, and the price. Something to note is that 3 bed apartments have a large range of different prices even though they are all 5 star ratings and around the same number of baths (unless 0.5 baths really makes that big of a difference in the price of rental per night).
 
@@ -180,7 +180,7 @@ MongoDB Command 6:
 
 show the number of listings per host
 
-`mongo
+```mongo
 db.listings.aggregate([
     {
         $group: {
@@ -189,10 +189,10 @@ db.listings.aggregate([
         }
     }
 ])
-`
+```
 
 Output:
-`
+```
 [
   { _id: 11818709, listingCount: 1 },
   { _id: 198859968, listingCount: 1 },
@@ -215,13 +215,13 @@ Output:
   { _id: 42230885, listingCount: 1 },
   { _id: 40983081, listingCount: 1 }
 ]
-`
+```
 
 This query shoulds the number of listsings by host. With the small sample size we have here (could press 'it' command to get a better idea), we can see that most hosts only have only place in seattle that is open for rental through Airbnb. 
 
 MongoDB Command 7:
 
-`mongo
+```mongo
 db.listings.aggregate([
     {
         $group: {
@@ -241,10 +241,10 @@ db.listings.aggregate([
     }
 
 ])
-`
+```
 
 Output:
-`
+```
 {
     _id: 'West Seattle, Washington, Washington, United States',
     average: 5
@@ -255,7 +255,7 @@ Output:
   },
   { _id: 'Seattle, Wa, United States', average: 4.91 }
 
-`
+```
 
 This query is finding the average review scores rating but only shows the groups that have average rating 4 or above and then show the average ratings by descending order. It seems like there are only 3 regions in seattle that have more than 4.91 average rating, and hence we can conclude that Airbnb listings are the best in these regions.
 
@@ -294,7 +294,7 @@ id | host_id | name | price | neighbourhood | host_name | host_is_superhost | be
 The raw code of what I did in order to munge the data is located in [munging python file](/munge.py). What I did to munge the data was to remove all the rows that had empty elements in them (hence we cannot perform operations on those lines of data). Furthermore, there was a lot of columns of data that would not be useful for analysis in this assignment. The main reason I decided to remove most of the columns was for the display in the previous section. Since displaying 127 columns of 20 entries of data would be difficult, I decided to munge the data to only include the columns that pertained to commands of this assignment. Once I removed all the entries with empty elements and removed all other columns, I created a new csv file called [listings_clean](/data/listings_clean.csv) that will be operated on in the rest of my analysis. 
 
 
-'python
+```python
 
 for item in listData:
     notempty = True
@@ -308,7 +308,7 @@ for item in listData:
     if notempty == True and len(tempList) == 10:
         cleanedLines += [tempList]
 
-'
+```
 This is the section of the code that would deal with removing empty rows and not important columns.
 
 
@@ -317,12 +317,12 @@ This is the section of the code that would deal with removing empty rows and not
 The full file of the python code used to run the output is located is embedded [here](/extracredit.py).
 
 Meaningful code snippet:
-`python
+```python
 #show exactly two documents from the `listings` collection in any order
 rows = collection.find({}).limit(2)
 for row in rows:
     print(row)
-`
+```
 
 The query that I wanted to recreate was the first query to show any 2 of the documents in the collection. The code snippet above has one query on the second line of the snippet. This is the exact same command we would run directly in MongoDB (except for using the db.databasename we just use collection). 
 
